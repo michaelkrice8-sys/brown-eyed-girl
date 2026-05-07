@@ -81,14 +81,12 @@ function ChordCard({ chord, size }) {
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:6 }}>
       <div style={{
-        width: w,
-        borderRadius: isLarge ? 18 : 12,
+        width: w, borderRadius: isLarge ? 18 : 12,
         background: isLarge ? "#0f0f0f" : "#111",
         border: isLarge ? "2px solid #FFD60A" : chord ? "1px solid #2a2a2a" : "1px solid #1a1a1a",
         boxShadow: isLarge ? "0 0 28px rgba(255,214,10,0.35), 0 8px 32px rgba(0,0,0,0.7)" : "none",
-        overflow: "hidden",
-        aspectRatio: "3/4",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        overflow: "hidden", aspectRatio: "3/4",
+        display:"flex", alignItems:"center", justifyContent:"center",
       }}>
         {chord && img
           ? <img src={img} alt={chord} style={{ width:"100%", height:"100%", objectFit:"contain", display:"block" }} />
@@ -124,8 +122,7 @@ export default function BrownEyedGirl() {
     const beat = beatRef.current;
     const rowIdx = Math.floor(beat / 8);
     const colIdx = beat % 8;
-    setCurrentRow(rowIdx);
-    setCurrentBlock(beat);
+    setCurrentRow(rowIdx); setCurrentBlock(beat);
     const row = SONG.rows[rowIdx];
     if (row.active[colIdx]) audio.playChordStrum(row.chord, colIdx % 2 === 0);
   }, [audio, totalBlocks]);
@@ -147,6 +144,8 @@ export default function BrownEyedGirl() {
   useEffect(() => () => clearInterval(intervalRef.current), []);
 
   const handlePlay = async () => {
+    // Locked during count-in — no double clicks
+    if (countIn > 0) return;
     if (isPlaying) { stopPlay(); setIsPlaying(false); return; }
     await audio.init();
     let count = 4;
@@ -174,36 +173,26 @@ export default function BrownEyedGirl() {
   const nextChord = isPlaying && currentRow >= 0
     ? SONG.rows[(currentRow + 1) % SONG.rows.length].chord : null;
 
+  const locked = countIn > 0;
+
   return (
     <>
       <style>{`
         * { box-sizing: border-box; }
-        html, body {
-          margin: 0; padding: 0;
-          overflow-x: hidden;
-          max-width: 100vw;
-          background: #0a0a0a;
-        }
+        html, body { margin:0; padding:0; overflow-x:hidden; max-width:100vw; background:#0a0a0a; }
       `}</style>
       <div style={{
-        minHeight: "100vh",
-        width: "100%",
-        maxWidth: "100vw",
-        overflowX: "hidden",
-        background: "radial-gradient(ellipse at top, #1a1208 0%, #0a0a0a 60%)",
-        color: "#fff",
-        fontFamily: "'Trebuchet MS', system-ui, sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "20px 16px 48px",
+        minHeight:"100vh", width:"100%", maxWidth:"100vw", overflowX:"hidden",
+        background:"radial-gradient(ellipse at top, #1a1208 0%, #0a0a0a 60%)",
+        color:"#fff", fontFamily:"'Trebuchet MS', system-ui, sans-serif",
+        display:"flex", flexDirection:"column", alignItems:"center",
+        padding:"20px 16px 48px",
       }}>
 
         {/* Header */}
         <div style={{ textAlign:"center", marginBottom:20, width:"100%" }}>
           <div style={{ fontSize:10, color:"#555", letterSpacing:3, marginBottom:6 }}>NO THEORY CLUB</div>
-          <div style={{ fontSize:26, fontWeight:900, color:"#fff", letterSpacing:0.5,
-            textShadow:"0 2px 20px rgba(255,190,11,0.3)" }}>{SONG.name}</div>
+          <div style={{ fontSize:26, fontWeight:900, color:"#fff", textShadow:"0 2px 20px rgba(255,190,11,0.3)" }}>{SONG.name}</div>
           <div style={{ display:"flex", gap:12, justifyContent:"center", marginTop:6 }}>
             <span style={{ fontSize:12, color:"#555" }}>♩ {bpm} BPM</span>
             {SONG.capo > 0 && <span style={{ fontSize:12, color:"#FFBE0B" }}>Capo {SONG.capo}</span>}
@@ -213,51 +202,49 @@ export default function BrownEyedGirl() {
         {/* Chord Carousel */}
         <div style={{
           width:"100%", marginBottom:14,
-          background:"#0f0f0f", border:"1px solid #1e1e1e", borderRadius:20,
-          padding:"16px 12px",
+          background:"#0f0f0f", border:"1px solid #1e1e1e", borderRadius:20, padding:"16px 12px",
         }}>
           <div style={{ fontSize:9, color:"#555", letterSpacing:2, textAlign:"center", marginBottom:14 }}>
             {isPlaying ? "NOW PLAYING" : "FIRST CHORD"}
           </div>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:10 }}>
-            <div style={{ opacity:0.35, flexShrink:0 }}>
-              <ChordCard chord={prevChord} size="small" />
-            </div>
+            <div style={{ opacity:0.35, flexShrink:0 }}><ChordCard chord={prevChord} size="small" /></div>
             <div style={{ fontSize:20, color:"#2a2a2a", flexShrink:0 }}>‹</div>
-            <div style={{ flexShrink:0 }}>
-              <ChordCard chord={currentChord || SONG.rows[0].chord} size="large" />
-            </div>
+            <div style={{ flexShrink:0 }}><ChordCard chord={currentChord || SONG.rows[0].chord} size="large" /></div>
             <div style={{ fontSize:20, color:"#2a2a2a", flexShrink:0 }}>›</div>
-            <div style={{ opacity:0.35, flexShrink:0 }}>
-              <ChordCard chord={nextChord} size="small" />
-            </div>
+            <div style={{ opacity:0.35, flexShrink:0 }}><ChordCard chord={nextChord} size="small" /></div>
           </div>
         </div>
 
-        {/* Play / Stop */}
-        <button onClick={handlePlay} style={{
-          width:"100%", padding:"16px", borderRadius:16, border:"none",
-          background: countIn > 0
-            ? "linear-gradient(135deg,#a06000,#c87800)"
-            : isPlaying
-            ? "linear-gradient(135deg,#c0392b,#e74c3c)"
-            : "linear-gradient(135deg,#FFD60A,#F77F00)",
-          color: isPlaying || countIn > 0 ? "#fff" : "#111",
-          fontSize: countIn > 0 ? 30 : 18, fontWeight:900, cursor:"pointer",
-          boxShadow: countIn > 0 ? "0 4px 20px rgba(200,120,0,0.4)"
-            : isPlaying ? "0 4px 20px rgba(231,76,60,0.4)"
-            : "0 4px 24px rgba(255,214,10,0.4)",
-          transition:"all 0.15s", marginBottom:14,
-          touchAction: "manipulation",
-        }}>
-          {countIn > 0 ? countIn : isPlaying ? "⏹ Stop" : "▶ Play"}
+        {/* Play / Stop — disabled + no pointer events during count-in */}
+        <button
+          onClick={handlePlay}
+          disabled={locked}
+          style={{
+            width:"100%", padding:"16px", borderRadius:16, border:"none",
+            background: locked
+              ? "linear-gradient(135deg,#a06000,#c87800)"
+              : isPlaying
+              ? "linear-gradient(135deg,#c0392b,#e74c3c)"
+              : "linear-gradient(135deg,#FFD60A,#F77F00)",
+            color: isPlaying || locked ? "#fff" : "#111",
+            fontSize: locked ? 30 : 18, fontWeight:900,
+            cursor: locked ? "not-allowed" : "pointer",
+            pointerEvents: locked ? "none" : "auto",
+            opacity: 1,
+            boxShadow: locked ? "0 4px 20px rgba(200,120,0,0.4)"
+              : isPlaying ? "0 4px 20px rgba(231,76,60,0.4)"
+              : "0 4px 24px rgba(255,214,10,0.4)",
+            transition:"all 0.15s", marginBottom:14,
+            touchAction:"manipulation",
+          }}>
+          {locked ? countIn : isPlaying ? "⏹ Stop" : "▶ Play"}
         </button>
 
         {/* Strumming Rows */}
         <div style={{
           width:"100%", background:"#0a0a0a",
-          border:"1px solid #2a2a2a", borderRadius:20,
-          padding:"16px 12px", marginBottom:14,
+          border:"1px solid #2a2a2a", borderRadius:20, padding:"16px 12px", marginBottom:14,
         }}>
           <div style={{ fontSize:9, color:"#555", letterSpacing:2, textAlign:"center", marginBottom:14 }}>
             STRUMMING PATTERN
@@ -266,41 +253,28 @@ export default function BrownEyedGirl() {
             const isActiveRow = isPlaying && currentRow === rowIdx;
             return (
               <div key={rowIdx} style={{ marginBottom: rowIdx < SONG.rows.length - 1 ? 20 : 0 }}>
-                {/* Chord label — big and highlighted */}
-                <div style={{
-                  display:"flex", alignItems:"center", gap:10,
-                  marginBottom:8, paddingLeft:2,
-                }}>
-                  <div style={{ fontSize:9, color:"#444", letterSpacing:1, flexShrink:0 }}>
-                    ROW {rowIdx + 1}
-                  </div>
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8, paddingLeft:2 }}>
+                  <div style={{ fontSize:9, color:"#444", letterSpacing:1, flexShrink:0 }}>ROW {rowIdx+1}</div>
                   <div style={{
-                    fontSize: 22,
-                    fontWeight: 900,
+                    fontSize:22, fontWeight:900,
                     color: isActiveRow ? "#FFD60A" : "#3a3a3a",
                     textShadow: isActiveRow ? "0 0 16px rgba(255,214,10,0.9)" : "none",
                     background: isActiveRow ? "rgba(255,214,10,0.08)" : "transparent",
                     border: isActiveRow ? "1px solid rgba(255,214,10,0.25)" : "1px solid transparent",
-                    borderRadius: 8,
-                    padding: "2px 10px",
-                    transition: "all 0.1s",
-                    letterSpacing: 1,
-                  }}>
-                    {row.chord}
-                  </div>
+                    borderRadius:8, padding:"2px 10px",
+                    transition:"all 0.1s", letterSpacing:1,
+                  }}>{row.chord}</div>
                 </div>
-
-                {/* Strum blocks */}
                 <div style={{ display:"flex", gap:4, justifyContent:"center" }}>
                   {row.active.map((active, colIdx) => {
                     const blockIdx = rowIdx * 8 + colIdx;
                     const isBeat = isPlaying && currentBlock === blockIdx;
-                    const isCountIn = countIn > 0 && rowIdx === 0 && colIdx === countInBlock;
+                    const isCountIn = locked && rowIdx === 0 && colIdx === countInBlock;
                     return (
                       <div key={colIdx} style={{
-                        width: 36, height: 36, borderRadius: 9,
+                        width:36, height:36, borderRadius:9,
                         display:"flex", alignItems:"center", justifyContent:"center",
-                        fontSize: 16, fontWeight: 700,
+                        fontSize:16, fontWeight:700,
                         background: isCountIn ? "rgba(160,96,0,0.4)"
                           : isBeat ? "linear-gradient(135deg,#FFD60A,#F77F00)"
                           : active ? "#1c1c1c" : "#111",
@@ -309,10 +283,10 @@ export default function BrownEyedGirl() {
                           : active ? "1px solid #444" : "1px dashed #222",
                         opacity: active ? 1 : 0.25,
                         transform: isBeat ? "scale(1.1)" : "scale(1)",
-                        transition: "transform 0.05s, background 0.05s",
+                        transition:"transform 0.05s, background 0.05s",
                         boxShadow: isBeat ? "0 0 12px rgba(255,214,10,0.8)" : "none",
                         color: isCountIn ? "#F77F00" : isBeat ? "#111" : active ? "#bbb" : "#333",
-                        flexShrink: 0,
+                        flexShrink:0,
                       }}>
                         {isCountIn ? countIn : DIRS[colIdx]}
                       </div>
@@ -327,8 +301,7 @@ export default function BrownEyedGirl() {
         {/* BPM Control */}
         <div style={{
           width:"100%", background:"#0a0a0a",
-          border:"1px solid #2a2a2a", borderRadius:16,
-          padding:"14px 14px", marginBottom:20,
+          border:"1px solid #2a2a2a", borderRadius:16, padding:"14px", marginBottom:20,
         }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
             <span style={{ fontSize:11, fontWeight:700, color:"#888" }}>BPM</span>
@@ -351,8 +324,7 @@ export default function BrownEyedGirl() {
                 border: bpm===b ? "1px solid #FFD60A" : "1px solid #2a2a2a",
                 background: bpm===b ? "rgba(255,214,10,0.15)" : "#111",
                 color: bpm===b ? "#FFD60A" : "#555",
-                fontSize:11, fontWeight:700, cursor:"pointer",
-                touchAction:"manipulation",
+                fontSize:11, fontWeight:700, cursor:"pointer", touchAction:"manipulation",
               }}>{b}</button>
             ))}
           </div>
