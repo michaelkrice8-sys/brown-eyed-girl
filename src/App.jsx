@@ -112,7 +112,7 @@ function ChordCard({ chord, size }) {
         transition: "all 0.15s",
       }}>
         {chord && img
-          ? <img src={img} alt={chord} style={{ width: "120%", height: "auto", display: "block" }} />
+          ? <img src={img} alt={chord} style={{ width: "100%", height: "auto", display: "block", objectFit: "contain" }} />
           : <span style={{
               fontSize: isLarge ? 44 : 24,
               fontWeight: 900,
