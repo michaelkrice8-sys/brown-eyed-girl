@@ -178,8 +178,10 @@ export default function BrownEyedGirl() {
   return (
     <>
       <style>{`
-        * { box-sizing: border-box; }
-        html, body { margin:0; padding:0; overflow-x:hidden; overflow-y:auto; max-width:100vw; height:auto; background:#0a0a0a; }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { height: auto !important; overflow-y: scroll !important; background: #0a0a0a; }
+        body { margin: 0; padding: 0; height: auto !important; overflow: visible !important; background: #0a0a0a; }
+        #root { height: auto !important; overflow: visible !important; }
       `}</style>
       <div style={{
         width:"100%", maxWidth:"100vw", overflowX:"hidden",
