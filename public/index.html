@@ -7,15 +7,23 @@
     <meta name="description" content="Brown Eyed Girl — No Theory Club Guitar Player" />
     <title>Brown Eyed Girl | No Theory Club</title>
     <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-      body {
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
         background: #0a0a0a;
         color: #fff;
         font-family: 'Trebuchet MS', system-ui, sans-serif;
         -webkit-font-smoothing: antialiased;
-        overscroll-behavior: none;
+        overscroll-behavior-x: none;
       }
-      #root { min-height: 100vh; }
+      #root {
+        height: auto;
+        min-height: 100vh;
+      }
     </style>
   </head>
   <body>
