@@ -179,10 +179,10 @@ export default function BrownEyedGirl() {
     <>
       <style>{`
         * { box-sizing: border-box; }
-        html, body { margin:0; padding:0; overflow-x:hidden; max-width:100vw; background:#0a0a0a; }
+        html, body { margin:0; padding:0; overflow-x:hidden; overflow-y:auto; max-width:100vw; height:auto; background:#0a0a0a; }
       `}</style>
       <div style={{
-        minHeight:"100vh", width:"100%", maxWidth:"100vw", overflowX:"hidden",
+        width:"100%", maxWidth:"100vw", overflowX:"hidden",
         background:"radial-gradient(ellipse at top, #1a1208 0%, #0a0a0a 60%)",
         color:"#fff", fontFamily:"'Trebuchet MS', system-ui, sans-serif",
         display:"flex", flexDirection:"column", alignItems:"center",
