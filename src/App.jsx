@@ -188,9 +188,10 @@ export default function BrownEyedGirl() {
         display:"flex", flexDirection:"column", alignItems:"center",
         padding:"20px 16px 48px",
       }}>
+        <div style={{ width:"100%", maxWidth:560, display:"flex", flexDirection:"column", alignItems:"center" }}>
 
         {/* Header */}
-        <div style={{ textAlign:"center", marginBottom:20, width:"100%" }}>
+          <div style={{ textAlign:"center", marginBottom:20, width:"100%" }}>
           <div style={{ fontSize:10, color:"#555", letterSpacing:3, marginBottom:6 }}>NO THEORY CLUB</div>
           <div style={{ fontSize:26, fontWeight:900, color:"#fff", textShadow:"0 2px 20px rgba(255,190,11,0.3)" }}>{SONG.name}</div>
           <div style={{ display:"flex", gap:12, justifyContent:"center", marginTop:6 }}>
@@ -330,8 +331,9 @@ export default function BrownEyedGirl() {
           </div>
         </div>
 
-        <div style={{ fontSize:10, color:"#2a2a2a" }}>
-          © {new Date().getFullYear()} No Theory Club · All rights reserved.
+          <div style={{ fontSize:10, color:"#2a2a2a" }}>
+            © {new Date().getFullYear()} No Theory Club · All rights reserved.
+          </div>
         </div>
       </div>
     </>
