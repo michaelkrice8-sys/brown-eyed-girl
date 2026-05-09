@@ -18,7 +18,7 @@ const CHORD_AUDIO_DATA = {
 
 const SONG = {
   name: "Brown Eyed Girl",
-  bpm: 60,
+  bpm: 40,
   capo: 0,
   rows: [
     { chord:"G", active:[true,false,true,true,false,true,true,true] },
@@ -318,7 +318,7 @@ export default function BrownEyedGirl() {
             }}
             style={{ width:"100%", accentColor:"#FFD60A", cursor:"pointer", marginBottom:10 }} />
           <div style={{ display:"flex", gap:6 }}>
-            {[60,80,100,120].map(b => (
+            {[40,60,80,100,120].map(b => (
               <button key={b} onClick={() => {
                 setBpm(b); bpmRef.current = b;
                 if (isPlaying) { stopPlay(); setTimeout(startPlay, 50); }
